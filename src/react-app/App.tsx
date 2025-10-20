@@ -1,66 +1,44 @@
-// src/App.tsx
+import "./index.css"
+import UnityStatusCard from "../components/UnityStatusCard"
+import GitHubFeed from "../components/GitHubFeed"
+import Timeline from "../components/Timeline"
+import GameInfo from "../components/GameInfo"
+import CommunityLinks from "../components/CommunityLinks"
 
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
-import honoLogo from "./assets/hono.svg";
-import "./App.css";
-
-function App() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState("unknown");
-
+export default function App() {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <a href="https://hono.dev/" target="_blank">
-          <img src={honoLogo} className="logo cloudflare" alt="Hono logo" />
-        </a>
-        <a href="https://workers.cloudflare.com/" target="_blank">
-          <img
-            src={cloudflareLogo}
-            className="logo cloudflare"
-            alt="Cloudflare logo"
-          />
-        </a>
-      </div>
-      <h1>Vite + React + Hono + Cloudflare</h1>
-      <div className="card">
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          aria-label="increment"
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <div className="card">
-        <button
-          onClick={() => {
-            fetch("/api/")
-              .then((res) => res.json() as Promise<{ name: string }>)
-              .then((data) => setName(data.name));
-          }}
-          aria-label="get name"
-        >
-          Name from API is: {name}
-        </button>
-        <p>
-          Edit <code>worker/index.ts</code> to change the name
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the logos to learn more</p>
-    </>
-  );
-}
+      <header className="nav">
+        <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 12, paddingBottom: 12 }}>
+          <div style={{ fontWeight: 700 }}>Arcflare Games</div>
+          <nav className="small" style={{ display: "flex", gap: 16 }}>
+            <a className="link" href="/">Home</a>
+            <a className="link" href="/forum">Forum</a>
+            <a className="link" href="/store">Store</a>
+            <a className="link" href="/admin">Admin</a>
+          </nav>
+        </div>
+      </header>
 
-export default App;
+      <main className="container" style={{ display: "grid", gap: 16, marginTop: 18, marginBottom: 40 }}>
+        <section className="glass card">
+          <h1>Vývoj hry – transparentně a v reálném čase</h1>
+          <p className="muted">Sleduj, na čem právě dělám v Unity, poslední commity a postup vývoje.</p>
+        </section>
+
+        <div className="grid grid-2">
+          <UnityStatusCard />
+          <GitHubFeed />
+        </div>
+
+        <Timeline />
+        <GameInfo />
+        <CommunityLinks />
+      </main>
+
+      <footer className="container small" style={{ textAlign: "center", opacity: .6, paddingBottom: 24 }}>
+        © {new Date().getFullYear()} Arcflare Games
+      </footer>
+    </>
+  )
+}
