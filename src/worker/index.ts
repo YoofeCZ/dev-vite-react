@@ -1,4 +1,3 @@
-// src/worker/index.ts
 import { Hono } from "hono"
 
 type Bindings = {
@@ -11,6 +10,16 @@ type UnityStatus = {
   activity?: string
   scene?: string
   lastUpdate: number
+  totalMs?: number
+  sessionMs?: number
+  project?: {
+    name?: string
+    startedAt?: number
+    tenureMs?: number
+  }
+  editor?: {
+    version?: string
+  }
 }
 
 type LatestCommit = {
@@ -29,6 +38,10 @@ const mem = {
     activity: "",
     scene: "",
     lastUpdate: 0,
+    totalMs: 0,
+    sessionMs: 0,
+    project: { name: "", startedAt: 0, tenureMs: 0 },
+    editor: { version: "" }
   },
   commit: <LatestCommit | null>null,
 }
@@ -53,15 +66,30 @@ app.post("/api/unity-status", async (c) => {
   const body = await c.req.json<UnityStatus>().catch(() => null)
   if (!body) return c.json({ error: "Invalid JSON" }, 400)
 
+  // doplnění základních údajů
   body.lastUpdate = Date.now()
   if (body.mode === "working" || body.mode === "break") body.online = true
   if (body.mode === "offline") body.online = false
+
+  // výchozí hodnoty pokud plugin nepošle
+  body.totalMs ??= mem.unity.totalMs || 0
+  body.sessionMs ??= 0
+  body.project ??= mem.unity.project || { name: "", startedAt: Date.now(), tenureMs: 0 }
+  body.editor ??= mem.unity.editor || { version: "" }
+
+  // pokud posílá working → přičti čas
+  if (body.mode === "working" && mem.unity.online) {
+    const elapsed = Date.now() - (mem.unity.lastUpdate || Date.now())
+    body.totalMs = (mem.unity.totalMs || 0) + elapsed
+    body.sessionMs = (mem.unity.sessionMs || 0) + elapsed
+  } else if (body.mode === "offline") {
+    body.sessionMs = 0
+  }
 
   const kv = c.env.KV_STATUS
   if (kv) await kv.put("unity_status", JSON.stringify(body))
   else mem.unity = body
 
-  // místo pro n8n/Discord notifikace (fetch do webhooku)
   return c.json({ ok: true })
 })
 
@@ -103,7 +131,6 @@ app.get("/api/latest-commit", async (c) => {
   })
 })
 
-// demo root endpoint (používá šablona)
 app.get("/api/", (c) => c.json({ name: "Arcflare Games" }))
 
 export default app
