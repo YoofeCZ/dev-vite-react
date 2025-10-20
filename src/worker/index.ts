@@ -2,6 +2,7 @@ import { Hono } from "hono"
 
 type Bindings = {
   KV_STATUS: KVNamespace
+  AUTH_TOKEN: string
 }
 
 type UnityStatus = {
@@ -63,21 +64,31 @@ app.get("/api/unity-status", async (c) => {
 
 // POST Unity status (Unity Editor webhook/heartbeat)
 app.post("/api/unity-status", async (c) => {
+  // 1️⃣ Autentizace
+  const authHeader = c.req.header("authorization") || ""
+  const token = authHeader.replace("Bearer ", "").trim()
+  const expected = c.env.AUTH_TOKEN || "" 
+
+  if (expected && token !== expected) {
+    return c.json({ error: "Unauthorized" }, 401)
+  }
+
+  // 2️⃣ Načti tělo požadavku
   const body = await c.req.json<UnityStatus>().catch(() => null)
   if (!body) return c.json({ error: "Invalid JSON" }, 400)
 
-  // doplnění základních údajů
+  // 3️⃣ Doplň základní data
   body.lastUpdate = Date.now()
   if (body.mode === "working" || body.mode === "break") body.online = true
   if (body.mode === "offline") body.online = false
 
-  // výchozí hodnoty pokud plugin nepošle
+  // výchozí hodnoty, pokud plugin neposlal
   body.totalMs ??= mem.unity.totalMs || 0
   body.sessionMs ??= 0
   body.project ??= mem.unity.project || { name: "", startedAt: Date.now(), tenureMs: 0 }
   body.editor ??= mem.unity.editor || { version: "" }
 
-  // pokud posílá working → přičti čas
+  // přičti čas pokud aktivní session
   if (body.mode === "working" && mem.unity.online) {
     const elapsed = Date.now() - (mem.unity.lastUpdate || Date.now())
     body.totalMs = (mem.unity.totalMs || 0) + elapsed
@@ -86,6 +97,7 @@ app.post("/api/unity-status", async (c) => {
     body.sessionMs = 0
   }
 
+  // 4️⃣ Ulož do KV nebo paměti
   const kv = c.env.KV_STATUS
   if (kv) await kv.put("unity_status", JSON.stringify(body))
   else mem.unity = body

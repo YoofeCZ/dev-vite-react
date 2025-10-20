@@ -8,15 +8,13 @@
     "enabled": true
   },
   "upload_source_maps": true,
-  "assets": {
-    "directory": "./dist/client",
-    "not_found_handling": "single-page-application"
-  },
-    "kv_namespaces": [
+  "kv_namespaces": [
     {
       "binding": "KV_STATUS",
-      "id": "98f8fb150fcf480c88899697599ced1f"
+      "id": "1d4c4f7b23d148c8adb4037b424e3cf2"
     }
-  ]
-  
+  ],
+  "vars": {
+    "AUTH_TOKEN": "devkit-obscurus-unity-secret-token"
+  }
 }
