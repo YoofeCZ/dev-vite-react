@@ -9,12 +9,13 @@ type UnityStatus = {
 }
 
 function prettySince(ts: number) {
-  const diff = Date.now() - ts
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return "před chvílí"
-  if (m < 60) return `před ${m} min`
-  const h = Math.floor(m / 60)
-  return `před ${h} h`
+  if (!ts || ts < Date.now() - 1000 * 60 * 60 * 24 * 14) return "—"; // staré/offline
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "před chvílí";
+  if (m < 60) return `před ${m} min`;
+  const h = Math.floor(m / 60);
+  return `před ${h} h`;
 }
 
 export default function UnityStatusCard() {
