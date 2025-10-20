@@ -1,5 +1,5 @@
-import UnityStatusCard from "./UnityStatusCard";
-import GitHubFeed from "./GitHubFeed";
+import UnityStatusCard from "./UnityStatusCard"
+import GitHubFeed from "./GitHubFeed"
 
 export default function StatusDashboard() {
   return (
@@ -8,7 +8,7 @@ export default function StatusDashboard() {
         <h2 className="section-title">Real-Time Development Status</h2>
 
         <div className="dashboard-grid">
-          {/* Current Task (z Unity statusu by šlo vytáhnout activity/scene; teď placeholder) */}
+          {/* Current Task */}
           <div className="dashboard-card">
             <h4>🎯 Current Task</h4>
             <p className="current-task">Implementing Enemy AI Behavior System</p>
@@ -24,11 +24,16 @@ export default function StatusDashboard() {
             </div>
           </div>
 
-          {/* Tvoje živé karty re-used ve stejném layoutu */}
-          <div className="dashboard-card"><UnityStatusCard /></div>
-          <div className="dashboard-card"><GitHubFeed /></div>
+          {/* Karty */}
+          <div className="dashboard-card">
+            <UnityStatusCard compact />
+          </div>
+
+          <div className="dashboard-card">
+            <GitHubFeed compact />
+          </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

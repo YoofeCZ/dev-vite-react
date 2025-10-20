@@ -9,16 +9,16 @@ type UnityStatus = {
 }
 
 function prettySince(ts: number) {
-  if (!ts || ts < Date.now() - 1000 * 60 * 60 * 24 * 14) return "—"; // staré/offline
-  const diff = Date.now() - ts;
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "před chvílí";
-  if (m < 60) return `před ${m} min`;
-  const h = Math.floor(m / 60);
-  return `před ${h} h`;
+  if (!ts || ts < Date.now() - 1000 * 60 * 60 * 24 * 14) return "—"
+  const diff = Date.now() - ts
+  const m = Math.floor(diff / 60000)
+  if (m < 1) return "před chvílí"
+  if (m < 60) return `před ${m} min`
+  const h = Math.floor(m / 60)
+  return `před ${h} h`
 }
 
-export default function UnityStatusCard() {
+export default function UnityStatusCard({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<UnityStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -28,8 +28,7 @@ export default function UnityStatusCard() {
       if (!res.ok) throw new Error(res.statusText)
       const s = await res.json() as UnityStatus
       setStatus(s); setError(null)
-    } catch (e: any) {
-      // fallback pro DEV, když neběží worker
+    } catch {
       setStatus({
         online: false, mode: "offline", activity: "", scene: "", lastUpdate: Date.now()
       })
@@ -45,12 +44,15 @@ export default function UnityStatusCard() {
 
   const badge = (m: UnityStatus["mode"]) => {
     if (m === "working") return <span className="badge green">🟢 Pracuji</span>
-    if (m === "break")   return <span className="badge yellow">🟡 Pauza</span>
+    if (m === "break") return <span className="badge yellow">🟡 Pauza</span>
     return <span className="badge gray">⚫ Offline</span>
   }
 
+  // ✨ Pokud je compact = true, vypneme "glass" a vnitřní padding
+  const wrapperClass = compact ? "card-inner" : "glass card"
+
   return (
-    <div className="glass card">
+    <div className={wrapperClass}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
         <div>
           <h2>Unity status</h2>
