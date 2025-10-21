@@ -6,13 +6,13 @@ type UnityStatus = {
   activity?: string
   scene?: string
   lastUpdate: number
-  // Volitelné rozšíření, které může posílat Unity plugin:
-  totalMs?: number          // kumulativně odpracovaný čas na projektu
-  sessionMs?: number        // délka aktuální session
+  // Optional extension that the Unity plugin can send:
+  totalMs?: number          // cumulative time worked on the project
+  sessionMs?: number        // length of the current session
   project?: {
     name?: string
-    startedAt?: number      // timestamp prvního spuštění projektu
-    tenureMs?: number       // pokud uživatel vyplní, že na projektu pracuje X času
+    startedAt?: number      // timestamp when the project was first launched
+    tenureMs?: number       // if the user specifies they've been on the project for X time
   }
   editor?: {
     version?: string
@@ -21,9 +21,9 @@ type UnityStatus = {
 
 type Props = {
   compact?: boolean
-  /** Plná URL nebo relativní cesta. Když nevyplníš, vezme se NEXT_PUBLIC_UNITY_STATUS_URL nebo /api/unity-status */
+  /** Full URL or relative path. If omitted, NEXT_PUBLIC_UNITY_STATUS_URL or /api/unity-status will be used */
   endpoint?: string
-  /** Interval pollingu v ms (default 10s, min 2s) */
+  /** Polling interval in ms (default 10s, min 2s) */
   pollMs?: number
 }
 
@@ -31,12 +31,12 @@ function prettySince(ts: number) {
   if (!ts || ts < Date.now() - 1000 * 60 * 60 * 24 * 14) return "—"
   const diff = Date.now() - ts
   const s = Math.max(0, Math.floor(diff / 1000))
-  if (s < 5) return "živě"
-  if (s < 60) return `před ${s} s`
+  if (s < 5) return "live"
+  if (s < 60) return `${s} s ago`
   const m = Math.floor(s / 60)
-  if (m < 60) return `před ${m} min`
+  if (m < 60) return `${m} min ago`
   const h = Math.floor(m / 60)
-  return `před ${h} h`
+  return `${h} h ago`
 }
 
 function fmtDur(ms?: number) {
@@ -50,8 +50,8 @@ function fmtDur(ms?: number) {
   const minutes = totalMin % 60
 
   const parts: string[] = []
-  if (years) parts.push(`${years} r`)
-  if (months) parts.push(`${months} m`)
+  if (years) parts.push(`${years} y`)
+  if (months) parts.push(`${months} mo`)
   if (days) parts.push(`${days} d`)
   if (hours) parts.push(`${hours} h`)
   if (minutes || parts.length === 0) parts.push(`${minutes} min`)
@@ -59,7 +59,7 @@ function fmtDur(ms?: number) {
 }
 
 function calcTenureMs(s?: UnityStatus) {
-  // Preferuj explicitní tenureMs z pluginu. Jinak spočítej z startedAt.
+  // Prefer explicit tenureMs from the plugin. Otherwise compute from startedAt.
   const t = s?.project?.tenureMs
   if (t && t > 0) return t
   const started = s?.project?.startedAt
@@ -82,7 +82,7 @@ export default function UnityStatusCard({
   const resolvedEndpoint =
     endpoint ||
     (typeof process !== "undefined"
-      ? // @ts-ignore — v Nextu dostupné v build-time
+      ? // @ts-ignore — available at build time in Next.js
         process.env.NEXT_PUBLIC_UNITY_STATUS_URL
       : undefined) ||
     "/api/unity-status"
@@ -95,7 +95,7 @@ export default function UnityStatusCard({
       setStatus(s)
       setError(null)
     } catch (e) {
-      // fallback lokální hodnota, ať UI není prázdné
+      // local fallback so the UI isn't empty
       setStatus({
         online: false,
         mode: "offline",
@@ -105,7 +105,7 @@ export default function UnityStatusCard({
         totalMs: 0,
         project: undefined,
       })
-      setError("API nedostupné (dev fallback)")
+      setError("API unavailable (dev fallback)")
     }
   }, [resolvedEndpoint])
 
@@ -118,8 +118,8 @@ export default function UnityStatusCard({
   }, [load, pollMs])
 
   const badge = (m: UnityStatus["mode"]) => {
-    if (m === "working") return <span className="badge green">🟢 Pracuji</span>
-    if (m === "break") return <span className="badge yellow">🟡 Pauza</span>
+    if (m === "working") return <span className="badge green">🟢 Working</span>
+    if (m === "break") return <span className="badge yellow">🟡 Break</span>
     return <span className="badge gray">⚫ Offline</span>
   }
 
@@ -131,7 +131,7 @@ export default function UnityStatusCard({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
         <div>
           <h2>Unity status</h2>
-          <p className="small">Živý indikátor práce v Unity</p>
+          <p className="small">Live indicator of Unity work</p>
         </div>
         {status ? badge(status.mode) : badge("offline")}
       </div>
@@ -144,32 +144,32 @@ export default function UnityStatusCard({
 
       <div style={{ marginTop: 12, lineHeight: "1.6" }}>
         <div>
-          <span className="small">Projekt:</span>{" "}
+          <span className="small">Project:</span>{" "}
           {status?.project?.name || "—"}
         </div>
         <div>
-          <span className="small">Aktivita:</span>{" "}
+          <span className="small">Activity:</span>{" "}
           {status?.activity || "—"}
         </div>
         <div>
-          <span className="small">Scéna:</span>{" "}
+          <span className="small">Scene:</span>{" "}
           {status?.scene || "—"}
         </div>
         <div>
-          <span className="small">Naposledy:</span>{" "}
+          <span className="small">Last update:</span>{" "}
           {status ? prettySince(status.lastUpdate) : "—"}
         </div>
         <div>
-          <span className="small">Délka projektu:</span>{" "}
+          <span className="small">Project duration:</span>{" "}
           {fmtDur(tenureMs)}
         </div>
         <div>
-          <span className="small">Odpracováno celkem:</span>{" "}
+          <span className="small">Total time worked:</span>{" "}
           {fmtDur(status?.totalMs)}
         </div>
         {typeof status?.sessionMs === "number" && (
           <div>
-            <span className="small">Aktuální seance:</span>{" "}
+            <span className="small">Current session:</span>{" "}
             {fmtDur(status?.sessionMs)}
           </div>
         )}
