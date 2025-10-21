@@ -1,10 +1,8 @@
 const features = [
-  { title: "Dynamic Combat System", description: "Fluid melee and ranged combat with combo system", status: "completed" },
-  { title: "Procedural Planet Generation", description: "Explore unique planets with varied biomes", status: "completed" },
+  { title: "Boomer Shooter Combat System", description: "Fluid melee and ranged combat with combo system", status: "completed" },
   { title: "Character Progression", description: "Deep skill tree and equipment customization", status: "in-progress" },
   { title: "Story Campaign", description: "15+ hours of main story content", status: "in-progress" },
   { title: "Boss Battles", description: "Epic encounters with unique mechanics", status: "planned" },
-  { title: "Co-op Multiplayer", description: "Team up with friends online", status: "planned" },
   { title: "Side Quests", description: "Dozens of optional missions and secrets", status: "planned" },
   { title: "Original Soundtrack", description: "Dynamic music that responds to gameplay", status: "in-progress" }
 ];
@@ -24,16 +22,16 @@ export default function FeaturesGrid() {
         <div className="about-grid">
           <div className="about-card">
             <h3>🎮 Game Concept</h3>
-            <p>Project Eclipse combines intense combat, exploration, and storytelling in a rich sci-fi universe.</p>
+            <p>Obscurus combines intense combat, exploration, and storytelling in a 16th-century alchemical Prague.</p>
           </div>
           <div className="about-card">
             <h3>🛠️ Development Journey</h3>
-            <p>Started in January 2024 — from prototypes až po komplexní systémy, každý prvek je navržen pečlivě.</p>
+            <p>Started in June 2025 — From prototypes to complex systems, every element is carefully designed.</p>
           </div>
         </div>
 
         <div className="features-grid">
-          <h3>Key Features</h3>
+          <p><h3>Key Features</h3></p>
           <div className="features">
             {features.map((f, i) => (
               <div className="feature-card" key={i}>

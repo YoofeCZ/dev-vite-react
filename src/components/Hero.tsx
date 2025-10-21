@@ -8,13 +8,13 @@ export default function Hero() {
       </div>
       <div className="hero-content">
         <h1 className="hero-title">
-          <span className="title-main">Project Eclipse</span>
-          <span className="title-sub">An epic adventure through space and time</span>
+          <span className="title-main">Obscurus - Boomer Shooter</span>
+          <span className="title-sub">The city of secrets awakens</span>
         </h1>
         <p className="hero-description">
-          A story-driven action RPG set in a dystopian sci-fi universe where you explore mysterious planets,
-          uncover ancient secrets, and battle powerful enemies to save humanity from extinction.
-        </p>
+  Beneath the cobblestones of 16th-century Prague, alchemists hunt immortality,
+  monsters stalk the streets, and your only salvation is how fast you can pull the trigger.
+</p>
         <div className="hero-actions">
           <a className="btn btn-primary" href="#status"><span>🚀</span> View Progress</a>
           <a className="btn btn-secondary" href="https://discord.gg/yourserver" target="_blank" rel="noreferrer">

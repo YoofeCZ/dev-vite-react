@@ -1,28 +1,38 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "dev-vite-react",
-  "account_id": "a355311725afbdb07a231531619a4e01",
-  "main": "./src/worker/index.ts",
-  "compatibility_date": "2025-10-08",
-  "compatibility_flags": ["nodejs_compat"],
-  "observability": {
-    "enabled": true
-  },
-  "upload_source_maps": true,
-  "assets": {
-    "directory": "./dist",
-    "not_found_handling": "single-page-application"
-  },
-  "kv_namespaces": [
-    {
-      "binding": "KV_STATUS",
-      "id": "98f8fb150fcf480c88899697599ced1f"
-    }
-  ],
-  "vars": {
-    "AUTH_TOKEN": "devkit-obscurus-unity-secret-token"
-  },
-  "build": {
-    "command": "npm run build"
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "dev-vite-react",
+	"account_id": "a355311725afbdb07a231531619a4e01",
+	"main": "./src/worker/index.ts",
+	"compatibility_date": "2025-10-08",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"assets": {
+		"directory": "./dist",
+		"not_found_handling": "single-page-application"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "KV_STATUS",
+			"id": "98f8fb150fcf480c88899697599ced1f"
+		}
+	],
+	"vars": {
+		"AUTH_TOKEN": "devkit-obscurus-unity-secret-token"
+	},
+	"build": {
+		"command": "npm run build"
+	},
+	"d1_databases": [
+		{
+			"binding": "devlog",
+			"database_name": "devlog",
+			"database_id": "d087b9ae-db0c-439d-bcc9-7948d7049007",
+			"remote": true
+		}
+	]
 }

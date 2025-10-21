@@ -7,24 +7,17 @@ export default function StatusDashboard() {
       <div className="container">
         <h2 className="section-title">Real-Time Development Status</h2>
 
-        <div className="dashboard-grid">
-          {/* Current Task */}
-          <div className="dashboard-card">
-            <h4>🎯 Current Task</h4>
-            <p className="current-task">Implementing Enemy AI Behavior System</p>
-            <span className="timestamp">Last active: 2 hours ago</span>
+        {/* Progress bar NAD kartami */}
+        <div className="dashboard-progress">
+          <h4>📊 Overall Progress</h4>
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: "42%" }}></div>
+            <span className="progress-text">42%</span>
           </div>
+        </div>
 
-          {/* Progress bar */}
-          <div className="dashboard-card">
-            <h4>📊 Overall Progress</h4>
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: "42%" }}></div>
-              <span className="progress-text">42%</span>
-            </div>
-          </div>
-
-          {/* Karty */}
+        {/* GRID pro karty */}
+        <div className="dashboard-grid two-cols">
           <div className="dashboard-card">
             <UnityStatusCard compact />
           </div>
