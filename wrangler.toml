@@ -8,7 +8,7 @@ id = "98f8fb150fcf480c88899697599ced1f"
 
 [[d1_databases]]
 binding = "DEVLOG_DB"
-database_name = "devlog"
+database_name = "devlog2"
 database_id = "faa22f7a-6ee7-4290-b111-78a6915dc6ad"
 migrations_dir = "db/migrations"
 

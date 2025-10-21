@@ -29,9 +29,9 @@
 	},
 	"d1_databases": [
 		{
-			"binding": "devlog",
-			"database_name": "devlog",
-			"database_id": "d087b9ae-db0c-439d-bcc9-7948d7049007",
+			"binding": "DEVLOG_DB",
+			"database_name": "devlog2",
+			"database_id": "faa22f7a-6ee7-4290-b111-78a6915dc6ad",
 			"remote": true
 		}
 	]
