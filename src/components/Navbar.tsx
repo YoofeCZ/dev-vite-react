@@ -34,7 +34,7 @@ export default function Navbar() {
       <div className="nav-container">
         <div className="nav-logo">
           <span className="logo-icon">🌌</span>
-          <span className="logo-text">Project Eclipse</span>
+          <span className="logo-text">Obscurus - Mordern Boomer Shooter</span>
         </div>
 
         <div className="nav-menu" id="nav-menu">
@@ -42,6 +42,7 @@ export default function Navbar() {
           <a href="#about" className="nav-link">About</a>
           <a href="#status" className="nav-link">Status</a>
           <a href="#devlog" className="nav-link">DevLog</a>
+          <a href="/blog" className="nav-link">Blog</a>
           <a href="#contact" className="nav-link">Contact</a>
         </div>
 

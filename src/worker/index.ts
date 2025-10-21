@@ -169,17 +169,38 @@ function slugify(s: string) {
 }
 
 // PUBLIC: list nejnovějších (published)
+// PUBLIC: list published (s volitelným filtrováním a vyhledáváním)
 app.get("/api/posts", async (c) => {
-  const db = c.env.DEVLOG_DB as D1Database
-  const { results } = await db
-    .prepare(`SELECT id, slug, title, category, excerpt, thumbnail, published_at
-              FROM posts
-              WHERE status='published'
-              ORDER BY published_at DESC
-              LIMIT 12`)
-    .all()
+  const db = c.env.DEVLOG_DB
+  const url = new URL(c.req.url)
+
+  const q = (url.searchParams.get("q") || "").trim()
+  const category = url.searchParams.get("category") || ""
+  const limit = Math.min(Math.max(parseInt(url.searchParams.get("limit") || "24", 10) || 24, 1), 100)
+
+  let sql = `SELECT id, slug, title, category, excerpt, thumbnail, published_at
+             FROM posts
+             WHERE status='published'`
+  const params: any[] = []
+
+  if (["updates", "technical", "art"].includes(category)) {
+    sql += ` AND category = ?`
+    params.push(category)
+  }
+
+  if (q) {
+    sql += ` AND (title LIKE ? OR excerpt LIKE ?)`
+    const pat = `%${q}%`
+    params.push(pat, pat)
+  }
+
+  sql += ` ORDER BY published_at DESC LIMIT ?`
+  params.push(limit)
+
+  const { results } = await db.prepare(sql).bind(...params).all()
   return c.json(results || [])
 })
+
 
 // PUBLIC: detail (dovolíme načíst jen published)
 app.get("/api/posts/:slug", async (c) => {
